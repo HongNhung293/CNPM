@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zxx">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Courses | Education</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="manifest" href="site.webmanifest" />
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- CSS here -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/owl.carousel.min.css" />
+    <link rel="stylesheet" href="/css/slicknav.css" />
+    <link rel="stylesheet" href="/css/flaticon.css" />
+    <link rel="stylesheet" href="/css/progressbar_barfiller.css" />
+    <link rel="stylesheet" href="/css/gijgo.css" />
+    <link rel="stylesheet" href="/css/animate.min.css" />
+    <link rel="stylesheet" href="/css/animated-headline.css" />
+    <link rel="stylesheet" href="/css/magnific-popup.css" />
+    <link rel="stylesheet" href="/css/fontawesome-all.min.css" />
+    <link rel="stylesheet" href="/css/themify-icons.css" />
+    <link rel="stylesheet" href="/css/slick.css" />
+    <link rel="stylesheet" href="/css/nice-select.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+
+    <style>
+      .header-area {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 9999;
+        background-color: #ffffff !important; /* Nền trắng rõ ràng */
+        color: #000000 !important; /* Chữ đen rõ ràng */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ cho nổi */
+      }
+
+      .header-transparent {
+        background-color: #fff !important; /* Gỡ hiệu ứng trong suốt */
+      }
+
+      body {
+        padding-top: 100px; /* Đẩy nội dung xuống dưới header để không bị che */
+      }
+
+      a:hover {
+        color: #000 !important; /* hoặc màu khác rõ ràng */
+        text-decoration: underline;
+      }
+
+      .question-nav button {
+        width: 45px;
+        height: 45px;
+        font-weight: bold;
+        pointer-events: none; /* Không cho bấm */
+      }
+
+      .answered {
+        background-color: #28a745 !important;
+        color: white !important;
+        border-color: #28a745;
+      }
+
+      /* Không cho bôi đen, không cho copy, không cho chuột phải */
+      .no-select {
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+      }
+
+      .no-copy * {
+        user-select: none;
+        pointer-events: auto;
+      }
+
+      input.answer-input {
+        user-select: auto; /* Cho phép nhập, nhưng không cho copy nội dung bên cạnh */
+      }
+
+      /* Ngăn chuột phải */
+      body {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      body,
+      input,
+      button {
+        -webkit-user-drag: none;
+        -moz-user-drag: none;
+        user-drag: none;
+      }
+    </style>
+
+    <script>
+      // Ngăn chuột phải
+      document.addEventListener("contextmenu", function (e) {
+        e.preventDefault();
+      });
+
+      // Ngăn kéo văn bản
+      document.addEventListener("dragstart", function (e) {
+        e.preventDefault();
+      });
+
+      // Ngăn copy
+      document.addEventListener("copy", function (e) {
+        e.preventDefault();
+      });
+    </script>
+  </head>
+
+  <body>
+    <!-- ? Preloader Start -->
+    <div id="preloader-active">
+      <div class="preloader d-flex align-items-center justify-content-center">
+        <div class="preloader-inner position-relative">
+          <div class="preloader-circle"></div>
+          <div class="preloader-img pere-text">
+            <img src="/img/logo/loder.png" alt="" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Preloader Start -->
+    <!-- Header Start -->
+    <div th:replace="client/layout/header"></div>
+    <!-- Header End -->
+    <main>
+      <!--? slider Area Start-->
+
+      <div class="services-area services-area2 section-padding40">
+        <!-- Nếu không có kỳ thi -->
+        <div class="container mt-5">
+          <div class="row">
+            <!-- Câu hỏi -->
+            <div class="col-md-9">
+              <!-- Thanh đếm ngược -->
+              <div id="countdown-wrapper" style="margin-bottom: 20px">
+                <p>
+                  ⏰ <strong>Thời gian còn lại:</strong>
+                  <span
+                    id="countdown"
+                    style="font-weight: bold; font-size: 18px; color: green"
+                    >--:--</span
+                  >
+                </p>
+              </div>
+
+              <form
+                method="post"
+                th:action="@{/exam/submit}"
+                id="examForm"
+                class="no-select"
+              >
+                <input
+                  type="hidden"
+                  th:name="examSessionId"
+                  th:value="${examSession.id}"
+                />
+
+                <!-- Lặp từng câu hỏi -->
+                <div
+                  th:each="question, iterStat : ${questions}"
+                  style="margin-bottom: 10px"
+                  th:id="'q' + ${iterStat.index}"
+                  class="no-copy"
+                >
+                  <p style="margin-bottom: 4px">
+                    <strong>Câu [[${iterStat.index + 1}]]:</strong>
+                    <span th:text="${question.content}"></span>
+                    <span
+                      class="badge bg-info text-dark ms-2"
+                      th:text="${question.points + ' điểm'}"
+                    ></span>
+                  </p>
+
+                  <!-- SINGLE hoặc TRUE_FALSE -->
+                  <div
+                    th:if="${question.type.name() == 'SINGLE' or question.type.name() == 'TRUE_FALSE'}"
+                    class="ms-3"
+                    style="margin-bottom: 6px"
+                  >
+                    <div th:each="choice : ${question.choices}">
+                      <div
+                        th:if="${choice.content != null and !choice.content.isEmpty()}"
+                      >
+                        <label style="display: block; margin-bottom: 2px">
+                          <input
+                            type="radio"
+                            th:name="'answers[' + ${question.id} + ']'"
+                            th:value="${choice.content}"
+                            class="answer-input"
+                          />
+                          <span th:text="${choice.content}"></span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- MULTIPLE -->
+                  <div
+                    th:if="${question.type.name() == 'MULTIPLE'}"
+                    class="ms-3"
+                    style="margin-bottom: 6px"
+                  >
+                    <div th:each="choice : ${question.choices}">
+                      <div
+                        th:if="${choice.content != null and !choice.content.isEmpty()}"
+                      >
+                        <label style="display: block; margin-bottom: 2px">
+                          <input
+                            type="checkbox"
+                            th:name="'answers[' + ${question.id} + ']'"
+                            th:value="${choice.content}"
+                            class="answer-input"
+                          />
+                          <span th:text="${choice.content}"></span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- FILL_IN_BLANK -->
+                  <div
+                    th:if="${question.type.name() == 'FILL_IN_BLANK'}"
+                    style="margin-bottom: 6px"
+                  >
+                    <input
+                      type="text"
+                      class="form-control mt-1 answer-input"
+                      th:name="'answers[' + ${question.id} + ']'"
+                      style="font-size: 18px; height: 36px; padding: 5px"
+                      autocomplete="off"
+                    />
+                  </div>
+
+                  <hr style="margin: 8px 0" />
+                </div>
+
+                <!-- Nút gốc ẩn đi -->
+                <button
+                  class="btn btn-primary mt-4"
+                  type="submit"
+                  style="display: none !important"
+                  id="realSubmitBtn"
+                >
+                  Nộp bài
+                </button>
+
+                <!-- Nút mới hiển thị -->
+                <button
+                  class="btn btn-danger mt-4"
+                  type="button"
+                  id="confirmSubmitBtn"
+                >
+                  Nộp bài
+                </button>
+              </form>
+            </div>
+
+            <!-- Thanh điều hướng câu hỏi -->
+            <div class="col-md-3">
+              <h2>Câu hỏi đã trả lời</h2>
+              <div class="question-nav d-flex flex-wrap">
+                <div th:each="q, idx : ${questions}">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary m-1"
+                    th:id="'nav' + ${idx.index}"
+                    onclick="scrollToQuestion([[${idx.index}]])"
+                  >
+                    [[${idx.count}]]
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <div th:replace="client/layout/footer"></div>
+    </footer>
+    <!-- Scroll Up -->
+    <div id="back-top">
+      <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
+    </div>
+    <!-- sử lí nút nộp -->
+    <script>
+      document
+        .getElementById("confirmSubmitBtn")
+        .addEventListener("click", function () {
+          const confirmSubmit = confirm("Bạn có chắc chắn muốn nộp bài không?");
+          if (confirmSubmit) {
+            submitted = true;
+
+            // Bỏ required tránh lỗi
+            form
+              .querySelectorAll("[required]")
+              .forEach((el) => el.removeAttribute("required"));
+
+            const manualInput = document.createElement("input");
+            manualInput.type = "hidden";
+            manualInput.name = "manualSubmit";
+            manualInput.value = "true";
+            form.appendChild(manualInput);
+
+            // Submit thật
+            document.getElementById("realSubmitBtn").click();
+          }
+        });
+    </script>
+
+    <script>
+      function scrollToQuestion(index) {
+        const element = document.getElementById("q" + index);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }
+    </script>
+    <script>
+      function scrollToQuestion(index) {
+        const qEl = document.getElementById("q" + index);
+        if (qEl) qEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const inputs = document.querySelectorAll(".answer-input");
+
+        for (var i = 0; i < inputs.length; i++) {
+          (function (input) {
+            input.addEventListener("input", function () {
+              const idx = input.getAttribute("data-index");
+              const navBtn = document.getElementById("nav" + idx);
+              if (navBtn) {
+                navBtn.classList.add("answered");
+              }
+            });
+
+            if (input.type === "radio") {
+              input.addEventListener("change", function () {
+                const idx = input.getAttribute("data-index");
+                const navBtn = document.getElementById("nav" + idx);
+                if (navBtn) {
+                  navBtn.classList.add("answered");
+                }
+              });
+            }
+          })(inputs[i]);
+        }
+      });
+    </script>
+    <script th:inline="javascript">
+      const examId = [[${examSession.id}]];
+      const timeLimitMinutes = [[${examSession.exam.timeLimit}]];
+      const timeLimitSeconds = timeLimitMinutes * 60;
+      const storageKey = "exam_start_time_" + examId;
+
+      const form = document.getElementById("examForm");
+      const countdownEl = document.getElementById("countdown");
+      let submitted = false;
+
+      const now = Date.now();
+      let startTime = localStorage.getItem(storageKey);
+
+      if (!startTime) {
+        startTime = now;
+        localStorage.setItem(storageKey, startTime);
+      } else {
+        startTime = parseInt(startTime);
+      }
+
+      let remainingSeconds = timeLimitSeconds - Math.floor((now - startTime) / 1000);
+
+      // Nếu hết giờ và người dùng đã xóa localStorage để làm lại → reset lại luôn
+      if (remainingSeconds <= 0) {
+        startTime = now;
+        localStorage.setItem(storageKey, startTime);
+        remainingSeconds = timeLimitSeconds;
+      }
+
+      function updateCountdown() {
+        const minutes = Math.floor(remainingSeconds / 60);
+        const seconds = remainingSeconds % 60;
+        countdownEl.textContent = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+
+        if (remainingSeconds <= timeLimitSeconds * 0.3) {
+          countdownEl.style.color = "red";
+          countdownEl.style.fontWeight = "bold";
+          countdownEl.style.animation = "blink 1s infinite";
+        }
+
+        if (remainingSeconds <= 0) {
+          clearInterval(timer);
+          submitExam();
+        }
+
+        remainingSeconds--;
+      }
+
+      function submitExam() {
+        if (submitted) return;
+        submitted = true;
+
+        if (!form) {
+          console.error("Không tìm thấy form!");
+          return;
+        }
+
+        form.querySelectorAll("[required]").forEach(el => el.removeAttribute("required"));
+
+        const autoInput = document.createElement("input");
+        autoInput.type = "hidden";
+        autoInput.name = "autoSubmit";
+        autoInput.value = "true";
+        form.appendChild(autoInput);
+
+        const submitButton = form.querySelector("button[type='submit'], input[type='submit']");
+        if (submitButton) {
+          submitButton.click();
+        } else {
+          form.submit();
+        }
+
+        localStorage.removeItem(storageKey);
+      }
+
+      const timer = setInterval(updateCountdown, 1000);
+      updateCountdown();
+
+      const style = document.createElement("style");
+      style.textContent = `
+        @keyframes blink {
+          0% { opacity: 1; }
+          50% { opacity: 0.2; }
+          100% { opacity: 1; }
+        }
+      `;
+      document.head.appendChild(style);
+
+      document.addEventListener("visibilitychange", function () {
+        if (document.hidden) submitExam();
+      });
+
+      window.addEventListener("beforeunload", function () {
+        if (!submitted && remainingSeconds > 0) {
+          submitExam();
+        }
+      });
+
+      // 🛡️ Gửi request giữ session
+      setInterval(() => {
+        fetch('/keep-session-alive', {
+          method: 'GET',
+          credentials: 'include'
+        });
+      }, 60000); // mỗi phút
+    </script>
+    <script>
+      document.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", function (e) {
+          if (!submitted && remainingSeconds > 0) {
+            e.preventDefault(); // 🛑 chặn chuyển hướng
+            submitted = true;
+
+            // Bỏ required tránh lỗi
+            form
+              .querySelectorAll("[required]")
+              .forEach((el) => el.removeAttribute("required"));
+
+            const autoInput = document.createElement("input");
+            autoInput.type = "hidden";
+            autoInput.name = "autoSubmit";
+            autoInput.value = "true";
+            form.appendChild(autoInput);
+
+            // Gửi form, rồi chuyển trang sau khi gửi xong
+            form.addEventListener("submit", () => {
+              // delay một chút rồi mới chuyển tiếp
+              setTimeout(() => {
+                window.location.href = link.href;
+              }, 800); // đủ thời gian cho backend xử lý
+            });
+
+            form.submit();
+          }
+        });
+      });
+    </script>
+
+    <!-- JS here -->
+    <script src="/js/vendor/modernizr-3.5.0.min.js"></script>
+    <!-- Jquery, Popper, Bootstrap -->
+    <script src="/js/vendor/jquery-1.12.4.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <!-- Jquery Mobile Menu -->
+    <script src="/js/jquery.slicknav.min.js"></script>
+
+    <!-- Jquery Slick , Owl-Carousel Plugins -->
+    <script src="/js/owl.carousel.min.js"></script>
+    <script src="/js/slick.min.js"></script>
+    <!-- One Page, Animated-HeadLin -->
+    <script src="/js/wow.min.js"></script>
+    <script src="/js/animated.headline.js"></script>
+    <script src="/js/jquery.magnific-popup.js"></script>
+
+    <!-- Date Picker -->
+    <script src="/js/gijgo.min.js"></script>
+    <!-- Nice-select, sticky -->
+    <script src="/js/jquery.nice-select.min.js"></script>
+    <script src="/js/jquery.sticky.js"></script>
+    <!-- Progress -->
+    <script src="/js/jquery.barfiller.js"></script>
+
+    <!-- counter , waypoint,Hover Direction -->
+    <script src="/js/jquery.counterup.min.js"></script>
+    <script src="/js/waypoints.min.js"></script>
+    <script src="/js/jquery.countdown.min.js"></script>
+    <script src="/js/hover-direction-snake.min.js"></script>
+
+    <!-- contact js -->
+    <script src="/js/contact.js"></script>
+    <script src="/js/jquery.form.js"></script>
+    <script src="/js/jquery.validate.min.js"></script>
+    <script src="/js/mail-script.js"></script>
+    <script src="/js/jquery.ajaxchimp.min.js"></script>
+
+    <!-- Jquery Plugins, main Jquery -->
+    <script src="/js/plugins.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
